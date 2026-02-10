@@ -1,52 +1,12 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: #f4f4f4;
-    margin: 0;
+body {font-family: Arial; text-align:center; background:#f2f2f2;}
+.tables button {
+    padding:15px; margin:10px; width:80px;
+    background:#ff5722; color:white; border:none; border-radius:6px;
 }
-
-h1 {
-    background: #ff5722;
-    color: white;
-    padding: 15px;
-}
-
-.customer input, select {
-    padding: 10px;
-    margin: 8px;
-    width: 180px;
-}
-
-.menu {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
+.menu {display:flex; flex-wrap:wrap; justify-content:center;}
 .item {
-    background: white;
-    width: 150px;
-    margin: 10px;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    background:white; margin:10px; padding:10px;
+    width:150px; border-radius:8px; box-shadow:0 3px 6px rgba(0,0,0,0.2);
 }
-
-button {
-    background: green;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    margin: 5px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-button:hover {
-    background: darkgreen;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
+.item img {width:100%; height:80px; object-fit:cover;}
+button {cursor:pointer;}
