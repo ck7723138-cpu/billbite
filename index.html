@@ -1,47 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bill Bite POS System</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Bill Bite POS</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>🍽 Bill Bite Restaurant POS</h1>
+<h1>🍽 Bill Bite Restaurant</h1>
 
-<!-- CUSTOMER INFO -->
-<div class="customer">
-    <input type="text" id="name" placeholder="Customer Name">
-    <input type="number" id="phone" placeholder="Phone Number">
-    <input type="number" id="table" placeholder="Table Number">
+<h2>Select Table</h2>
+<div id="tables" class="tables"></div>
+
+<h2 id="menu-title" style="display:none;">Menu</h2>
+<div id="menu" class="menu"></div>
+
+<h2>Order</h2>
+<ul id="order-list"></ul>
+<h3>Total ₹<span id="total">0</span></h3>
+
+<div id="actions" style="display:none;">
+    <button onclick="generateKOT()">👨‍🍳 KOT</button>
+    <button onclick="showBillOptions()">🧾 Bill</button>
 </div>
 
-<!-- PAYMENT MODE -->
-<div class="payment">
-    <label>Payment Mode:</label>
-    <select id="payment-mode">
+<div id="bill-options" style="display:none;">
+    <select id="payment">
         <option value="Cash">Cash</option>
         <option value="UPI">UPI</option>
         <option value="Credit">Credit</option>
     </select>
+    <button onclick="generateBill()">Confirm Bill</button>
 </div>
-
-<h2>Menu</h2>
-<div class="menu" id="menu"></div>
-
-<h2>Bill</h2>
-<ul id="bill-list"></ul>
-<h3>Total: ₹<span id="total">0</span></h3>
-
-<button onclick="generateBill()">🧾 Generate Bill</button>
-<button onclick="viewHistory()">📜 Bill History</button>
-<button onclick="viewKOT()">👨‍🍳 KOT History</button>
-
-<hr>
-
-<h2>Today's Payment Summary</h2>
-<p>Cash: ₹<span id="cash-total">0</span></p>
-<p>UPI: ₹<span id="upi-total">0</span></p>
-<p>Credit: ₹<span id="credit-total">0</span></p>
 
 <script src="app.js"></script>
 </body>
