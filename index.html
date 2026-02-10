@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apna Food Order</title>
+  <title>Apna Restaurant</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -13,27 +13,31 @@
     <p>Delicious food at your doorstep</p>
   </header>
 
+  <!-- Customer Details -->
+  <section class="order-form">
+    <input type="text" id="custName" placeholder="Your Name" required>
+    <input type="text" id="custAddress" placeholder="Delivery Address" required>
+    <input type="number" id="quantity" placeholder="Quantity" value="1" min="1">
+  </section>
+
   <section class="menu">
 
-    <!-- Product 1 -->
     <div class="card">
-      <img src="https://i.imgur.com/5Aqgz7o.jpg" />
+      <img src="https://i.imgur.com/5Aqgz7o.jpg">
       <h2>Chicken Biryani</h2>
       <p>₹180</p>
       <button onclick="orderNow('Chicken Biryani',180)">Order Now</button>
     </div>
 
-    <!-- Product 2 -->
     <div class="card">
-      <img src="https://i.imgur.com/8zQZ6bX.jpg" />
+      <img src="https://i.imgur.com/8zQZ6bX.jpg">
       <h2>Veg Thali</h2>
       <p>₹120</p>
       <button onclick="orderNow('Veg Thali',120)">Order Now</button>
     </div>
 
-    <!-- Product 3 -->
     <div class="card">
-      <img src="https://i.imgur.com/9n4K9ZC.jpg" />
+      <img src="https://i.imgur.com/9n4K9ZC.jpg">
       <h2>Burger Combo</h2>
       <p>₹150</p>
       <button onclick="orderNow('Burger Combo',150)">Order Now</button>
