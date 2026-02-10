@@ -1,89 +1,88 @@
-const items = [
-    {name:"Chicken Biryani", price:180},
-    {name:"Veg Thali", price:120},
-    {name:"Paneer Butter Masala", price:200},
-    {name:"Dal Tadka", price:110},
-    {name:"Fried Rice", price:130},
-    {name:"Noodles", price:140},
-    {name:"Burger", price:90},
-    {name:"Pizza", price:250},
-    {name:"Momos", price:80},
-    {name:"Sandwich", price:70},
-    {name:"Cold Drink", price:40},
-    {name:"Coffee", price:60},
-    {name:"Tea", price:20},
-    {name:"Ice Cream", price:50},
-    {name:"Manchurian", price:150},
-    {name:"Chowmein", price:130},
-    {name:"Roll", price:100},
-    {name:"Tandoori Roti", price:15},
-    {name:"Butter Naan", price:25},
-    {name:"Paratha", price:30},
-    {name:"Soup", price:90},
-    {name:"Salad", price:60},
-    {name:"Fish Fry", price:220},
-    {name:"Chicken Curry", price:190},
-    {name:"Mutton Curry", price:260},
-    {name:"Pasta", price:170},
-    {name:"French Fries", price:80},
-    {name:"Spring Roll", price:120},
-    {name:"Dosa", price:90},
-    {name:"Idli", price:50},
-    {name:"Vada", price:40},
-    {name:"Upma", price:60},
-    {name:"Poha", price:50},
-    {name:"Pav Bhaji", price:100},
-    {name:"Chole Bhature", price:120},
-    {name:"Rajma Rice", price:110},
-    {name:"Curd Rice", price:90},
-    {name:"Chicken Wings", price:210},
-    {name:"Grilled Chicken", price:230},
-    {name:"Paneer Tikka", price:180},
-    {name:"Veg Burger", price:80},
-    {name:"Cheese Pizza", price:270},
-    {name:"Margarita Pizza", price:220},
-    {name:"Chicken Roll", price:110},
-    {name:"Egg Roll", price:90},
-    {name:"Omelette", price:50},
-    {name:"Boiled Egg", price:20},
-    {name:"Milkshake", price:100},
-    {name:"Lassi", price:70},
-    {name:"Juice", price:60},
-    {name:"Biryani Family Pack", price:400},
-    {name:"Special Thali", price:220},
-    {name:"Chicken Tikka", price:210},
-    {name:"Veg Fried Rice", price:120},
-    {name:"Chicken Fried Rice", price:150},
-    {name:"Paneer Roll", price:100},
-    {name:"Cheese Sandwich", price:90},
-    {name:"Chocolate Cake", price:80},
-    {name:"Brownie", price:70}
-];
+const items = Array.from({length:60}, (_,i)=>({name:"Item "+(i+1), price: (i+1)*5}));
 
 let total = 0;
 let billItems = [];
+let kotHistory = JSON.parse(localStorage.getItem("kotHistory")) || [];
+let billHistory = JSON.parse(localStorage.getItem("billHistory")) || [];
 
 const menuDiv = document.getElementById("menu");
 const billList = document.getElementById("bill-list");
 
-items.forEach(item => {
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `<h4>${item.name}</h4>
-                     <p>₹${item.price}</p>
-                     <button onclick="addItem('${item.name}',${item.price})">Add</button>`;
+items.forEach(item=>{
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<h4>${item.name}</h4><p>₹${item.price}</p>
+    <button onclick="addItem('${item.name}',${item.price})">Add</button>`;
     menuDiv.appendChild(div);
 });
 
-function addItem(name, price) {
-    billItems.push(name);
-    total += price;
+function addItem(name,price){
+    billItems.push({name,price});
+    total+=price;
 
-    const li = document.createElement("li");
-    li.textContent = `${name} - ₹${price}`;
+    const li=document.createElement("li");
+    li.textContent=`${name} - ₹${price}`;
     billList.appendChild(li);
-
-    document.getElementById("total").textContent = total;
+    document.getElementById("total").textContent=total;
 }
 
-function printBill() {
+function generateBill(){
+    const name=document.getElementById("name").value;
+    const table=document.getElementById("table").value;
+    const payment=document.getElementById("payment-mode").value;
+
+    if(!name||!table||billItems.length===0){alert("Fill details!");return;}
+
+    const data={
+        name, table, items:billItems, total, payment,
+        date:new Date().toISOString()
+    };
+
+    billHistory.push(data);
+    kotHistory.push({table, items:billItems, date:data.date});
+
+    localStorage.setItem("billHistory",JSON.stringify(billHistory));
+    localStorage.setItem("kotHistory",JSON.stringify(kotHistory));
+
+    updateSummary();
+    alert("Bill Saved!");
+
+    billItems=[]; total=0;
+    billList.innerHTML="";
+    document.getElementById("total").textContent=0;
+}
+
+function viewHistory(){
+    let txt="--- BILL HISTORY ---\n";
+    billHistory.forEach(b=>txt+=`${b.date}\nTable:${b.table}\n₹${b.total} (${b.payment})\n\n`);
+    alert(txt);
+}
+
+function viewKOT(){
+    let txt="--- KOT HISTORY ---\n";
+    kotHistory.forEach(k=>txt+=`${k.date}\nTable:${k.table}\nItems:${k.items.map(i=>i.name).join(", ")}\n\n`);
+    alert(txt);
+}
+
+function updateSummary(){
+    let cash=0,upi=0,credit=0;
+    billHistory.forEach(b=>{
+        if(b.payment==="Cash") cash+=b.total;
+        if(b.payment==="UPI") upi+=b.total;
+        if(b.payment==="Credit") credit+=b.total;
+    });
+    document.getElementById("cash-total").textContent=cash;
+    document.getElementById("upi-total").textContent=upi;
+    document.getElementById("credit-total").textContent=credit;
+}
+
+function cleanOld(){
+    const now=new Date();
+    billHistory=billHistory.filter(b=>(now-new Date(b.date))/(1000*60*60*24)<=60);
+    kotHistory=kotHistory.filter(k=>(now-new Date(k.date))/(1000*60*60*24)<=60);
+    localStorage.setItem("billHistory",JSON.stringify(billHistory));
+    localStorage.setItem("kotHistory",JSON.stringify(kotHistory));
+}
+
+cleanOld();
+updateSummary();
