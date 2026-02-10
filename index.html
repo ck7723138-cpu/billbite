@@ -1,50 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apna Restaurant</title>
-  <link rel="stylesheet" href="style.css" />
+    <title>Bill Bite POS</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <h1>🍽️ Apna Restaurant</h1>
-    <p>Delicious food at your doorstep</p>
-  </header>
+<h1>🍽 Bill Bite Restaurant</h1>
 
-  <!-- Customer Details -->
-  <section class="order-form">
-    <input type="text" id="custName" placeholder="Your Name" required>
-    <input type="text" id="custAddress" placeholder="Delivery Address" required>
-    <input type="number" id="quantity" placeholder="Quantity" value="1" min="1">
-  </section>
+<div class="customer">
+    <input type="text" id="name" placeholder="Customer Name">
+    <input type="number" id="phone" placeholder="Phone Number">
+    <input type="number" id="table" placeholder="Table Number">
+</div>
 
-  <section class="menu">
+<h2>Menu</h2>
+<div class="menu" id="menu"></div>
 
-    <div class="card">
-      <img src="https://i.imgur.com/5Aqgz7o.jpg">
-      <h2>Chicken Biryani</h2>
-      <p>₹180</p>
-      <button onclick="orderNow('Chicken Biryani',180)">Order Now</button>
-    </div>
+<h2>Bill</h2>
+<ul id="bill-list"></ul>
+<h3>Total: ₹<span id="total">0</span></h3>
 
-    <div class="card">
-      <img src="https://i.imgur.com/8zQZ6bX.jpg">
-      <h2>Veg Thali</h2>
-      <p>₹120</p>
-      <button onclick="orderNow('Veg Thali',120)">Order Now</button>
-    </div>
+<button onclick="printBill()">🧾 Print Bill</button>
+<button onclick="printKOT()">👨‍🍳 Print KOT</button>
 
-    <div class="card">
-      <img src="https://i.imgur.com/9n4K9ZC.jpg">
-      <h2>Burger Combo</h2>
-      <p>₹150</p>
-      <button onclick="orderNow('Burger Combo',150)">Order Now</button>
-    </div>
-
-  </section>
-
-  <script src="script.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
