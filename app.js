@@ -1,88 +1,76 @@
-const items = Array.from({length:60}, (_,i)=>({name:"Item "+(i+1), price: (i+1)*5}));
+let currentTable=null;
+let order={};
+let total=0;
 
-let total = 0;
-let billItems = [];
-let kotHistory = JSON.parse(localStorage.getItem("kotHistory")) || [];
-let billHistory = JSON.parse(localStorage.getItem("billHistory")) || [];
+const items=[
+{name:"Biryani",price:180,img:"https://picsum.photos/100?1"},
+{name:"Pizza",price:250,img:"https://picsum.photos/100?2"},
+{name:"Burger",price:120,img:"https://picsum.photos/100?3"},
+{name:"Momos",price:90,img:"https://picsum.photos/100?4"},
+{name:"Fried Rice",price:140,img:"https://picsum.photos/100?5"},
+{name:"Paneer",price:200,img:"https://picsum.photos/100?6"},
+{name:"Coffee",price:60,img:"https://picsum.photos/100?7"},
+{name:"Cold Drink",price:40,img:"https://picsum.photos/100?8"}
+];
 
-const menuDiv = document.getElementById("menu");
-const billList = document.getElementById("bill-list");
+const tablesDiv=document.getElementById("tables");
+for(let i=1;i<=10;i++){
+    const btn=document.createElement("button");
+    btn.textContent="T"+i;
+    btn.onclick=()=>selectTable(i);
+    tablesDiv.appendChild(btn);
+}
 
-items.forEach(item=>{
-    const div=document.createElement("div");
-    div.className="item";
-    div.innerHTML=`<h4>${item.name}</h4><p>₹${item.price}</p>
-    <button onclick="addItem('${item.name}',${item.price})">Add</button>`;
-    menuDiv.appendChild(div);
-});
+function selectTable(t){
+    currentTable=t;
+    document.getElementById("menu-title").style.display="block";
+    loadMenu();
+}
+
+function loadMenu(){
+    const menuDiv=document.getElementById("menu");
+    menuDiv.innerHTML="";
+    items.forEach(item=>{
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`<img src="${item.img}">
+        <h4>${item.name}</h4>
+        <p>₹${item.price}</p>`;
+        div.onclick=()=>addItem(item.name,item.price);
+        menuDiv.appendChild(div);
+    });
+}
 
 function addItem(name,price){
-    billItems.push({name,price});
-    total+=price;
+    if(!order[name]) order[name]={qty:0,price};
+    order[name].qty++;
+    updateOrder();
+}
 
-    const li=document.createElement("li");
-    li.textContent=`${name} - ₹${price}`;
-    billList.appendChild(li);
+function updateOrder(){
+    const list=document.getElementById("order-list");
+    list.innerHTML="";
+    total=0;
+    for(let i in order){
+        let itemTotal=order[i].qty*order[i].price;
+        total+=itemTotal;
+        const li=document.createElement("li");
+        li.textContent=`${i} x${order[i].qty} = ₹${itemTotal}`;
+        list.appendChild(li);
+    }
     document.getElementById("total").textContent=total;
+    document.getElementById("actions").style.display="block";
+}
+
+function generateKOT(){
+    alert("KOT Printed for Table "+currentTable);
+}
+
+function showBillOptions(){
+    document.getElementById("bill-options").style.display="block";
 }
 
 function generateBill(){
-    const name=document.getElementById("name").value;
-    const table=document.getElementById("table").value;
-    const payment=document.getElementById("payment-mode").value;
-
-    if(!name||!table||billItems.length===0){alert("Fill details!");return;}
-
-    const data={
-        name, table, items:billItems, total, payment,
-        date:new Date().toISOString()
-    };
-
-    billHistory.push(data);
-    kotHistory.push({table, items:billItems, date:data.date});
-
-    localStorage.setItem("billHistory",JSON.stringify(billHistory));
-    localStorage.setItem("kotHistory",JSON.stringify(kotHistory));
-
-    updateSummary();
-    alert("Bill Saved!");
-
-    billItems=[]; total=0;
-    billList.innerHTML="";
-    document.getElementById("total").textContent=0;
+    const pay=document.getElementById("payment").value;
+    alert(`Bill for Table ${currentTable}\nPayment: ${pay}\nTotal: ₹${total}`);
 }
-
-function viewHistory(){
-    let txt="--- BILL HISTORY ---\n";
-    billHistory.forEach(b=>txt+=`${b.date}\nTable:${b.table}\n₹${b.total} (${b.payment})\n\n`);
-    alert(txt);
-}
-
-function viewKOT(){
-    let txt="--- KOT HISTORY ---\n";
-    kotHistory.forEach(k=>txt+=`${k.date}\nTable:${k.table}\nItems:${k.items.map(i=>i.name).join(", ")}\n\n`);
-    alert(txt);
-}
-
-function updateSummary(){
-    let cash=0,upi=0,credit=0;
-    billHistory.forEach(b=>{
-        if(b.payment==="Cash") cash+=b.total;
-        if(b.payment==="UPI") upi+=b.total;
-        if(b.payment==="Credit") credit+=b.total;
-    });
-    document.getElementById("cash-total").textContent=cash;
-    document.getElementById("upi-total").textContent=upi;
-    document.getElementById("credit-total").textContent=credit;
-}
-
-function cleanOld(){
-    const now=new Date();
-    billHistory=billHistory.filter(b=>(now-new Date(b.date))/(1000*60*60*24)<=60);
-    kotHistory=kotHistory.filter(k=>(now-new Date(k.date))/(1000*60*60*24)<=60);
-    localStorage.setItem("billHistory",JSON.stringify(billHistory));
-    localStorage.setItem("kotHistory",JSON.stringify(kotHistory));
-}
-
-cleanOld();
-updateSummary();
